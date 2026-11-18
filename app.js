@@ -44,8 +44,64 @@ async function init() {
     }));
     if (content.resume) document.querySelectorAll('.resume-link').forEach(a => a.href = safeURL(content.resume));
     if (content.certificates?.length) {
-      document.querySelector('#certificate-list').innerHTML = content.certificates.map(c => `<article class="certificate-item"><h3>${escapeHTML(c.title)}</h3><p>${escapeHTML(c.issuer)}${c.date ? ' · ' + escapeHTML(c.date) : ''}</p>${c.file ? `<a class="text-link" href="${escapeHTML(safeURL(c.file))}" target="_blank" rel="noopener noreferrer">View certificate ↗</a>` : ''}${c.url ? ` <a class="text-link" href="${escapeHTML(safeURL(c.url))}" target="_blank" rel="noopener noreferrer">Verify credential ↗</a>` : ''}</article>`).join('');
-    }
+  document.querySelector('#certificate-list').innerHTML =
+    content.certificates.map(c => {
+      const isImage = /\.(png|jpe?g|webp)(?:[?#]|$)/i.test(c.file || '');
+
+      const preview = isImage
+        ? `<img
+            src="${escapeHTML(safeURL(c.file))}"
+            alt="${escapeHTML(c.title)} certificate"
+            loading="lazy">`
+        : `<div class="certificate-artwork" aria-hidden="true">
+            <span class="certificate-seal">✳</span>
+            <small>CERTIFICATE</small>
+            <strong>${escapeHTML(c.issuer)}</strong>
+          </div>`;
+
+      return `
+        <article class="project-card certificate-card">
+          <div class="project-art certificate-art">
+            ${preview}
+          </div>
+
+          <div class="project-content">
+            <span class="project-category">
+              ${escapeHTML(c.issuer)}
+            </span>
+
+            <h3>${escapeHTML(c.title)}</h3>
+
+            ${c.date ? `<p>${escapeHTML(c.date)}</p>` : ''}
+
+            <div class="certificate-links">
+              ${c.file ? `
+                <a
+                  class="project-link"
+                  href="${escapeHTML(safeURL(c.file))}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View ${escapeHTML(c.title)} certificate">
+                  View certificate <span>↗</span>
+                </a>
+              ` : ''}
+
+              ${c.url ? `
+                <a
+                  class="project-link"
+                  href="${escapeHTML(safeURL(c.url))}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Verify ${escapeHTML(c.title)} credential">
+                  Verify credential <span>↗</span>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+}
   } catch (error) {
     grid.innerHTML = '<p>Project details could not load. <a class="text-link" href="https://github.com/dinuka0987?tab=repositories">Explore my work on GitHub ↗</a></p>';
     statusText.textContent = 'Project details unavailable.';

@@ -14,3 +14,79 @@
 @media(min-width:1440px){.profile-portrait{height:500px}}
 @media(max-width:1000px){.profile-portrait{height:400px}.skill-row{grid-template-columns:205px 1fr}}
 @media(max-width:700px){.profile-portrait{height:420px;margin-top:15px}.skill-row{grid-template-columns:1fr}.skill-row .tags{grid-column:1}}
+/* Full-width certificates section below education */
+.credentials-grid {
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+.certificates {
+  padding: 0;
+}
+
+/* Reuse project card typography */
+.certificate-card .project-content h3 {
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.certificate-card .project-content p {
+  font-size: 12px;
+  max-width: none;
+}
+
+/* Certificate preview */
+.certificate-art {
+  padding: 24px;
+}
+
+.certificate-art img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Illustration for PDF certificates */
+.certificate-artwork {
+  position: relative;
+  width: 85%;
+  height: 150px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #68795a;
+  background: #1c251b;
+  text-align: center;
+  box-shadow: 10px 10px 0 #0002;
+  transform: rotate(-4deg);
+}
+
+.certificate-seal {
+  color: var(--green);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.certificate-artwork small {
+  color: var(--muted);
+  font: 8px monospace;
+  letter-spacing: 2px;
+}
+
+.certificate-artwork strong {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.certificate-links {
+  margin-top: auto;
+}
+
+.certificate-links .project-link + .project-link {
+  margin-top: 12px;
+}

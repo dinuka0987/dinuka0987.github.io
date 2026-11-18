@@ -1,0 +1,92 @@
+{
+  "featured": [
+    "python-vulnerability-scanner",
+    "Biz_balance",
+    "Voltify"
+  ],
+  "resume": "assets/Dinuka_Dilshan_Resume.pdf",
+  "certificates": [],
+  "projects": [
+    {
+      "repo": "python-vulnerability-scanner",
+      "name": "Python Vulnerability Scanner",
+      "category": "Security",
+      "description": "Audit Python dependencies against known vulnerabilities with OSV intelligence, a command-line tool, and a Flask web interface.",
+      "tags": [
+        "Python",
+        "Flask",
+        "OSV API"
+      ],
+      "visual": "scanner"
+    },
+    {
+      "repo": "Biz_balance",
+      "name": "BizBalance",
+      "category": "Mobile",
+      "description": "An offline-first finance app for small businesses, with income and expense tracking, budgets, reports, and local backups.",
+      "tags": [
+        "Flutter",
+        "Dart",
+        "Local storage"
+      ],
+      "visual": "balance"
+    },
+    {
+      "repo": "Voltify",
+      "name": "Voltify",
+      "category": "Web",
+      "description": "An EV parking and charging system with slot booking, charging rates, an admin dashboard, and real-time updates.",
+      "tags": [
+        "React",
+        "Node.js",
+        "MongoDB"
+      ],
+      "visual": "volt"
+    },
+    {
+      "repo": "Student_Planner_Application",
+      "name": "Student Planner",
+      "category": "Mobile",
+      "description": "A Flutter application that brings class timetables, assignments, exams, and study notes into one place.",
+      "tags": [
+        "Flutter",
+        "Dart",
+        "Firebase"
+      ],
+      "visual": "planner"
+    },
+    {
+      "repo": "Credit-card-checker",
+      "name": "Credit Card Checker",
+      "category": "Security",
+      "description": "An educational card security simulation with an interactive card preview and a seeded demonstration database. Use test data only.",
+      "tags": [
+        "Next.js",
+        "Express",
+        "MongoDB"
+      ],
+      "visual": "card"
+    },
+    {
+      "repo": "Food_Ordering_Manage",
+      "name": "Food Ordering Management",
+      "category": "Software",
+      "description": "A Java project exploring food ordering management. Explore the source code on GitHub.",
+      "tags": [
+        "Java"
+      ],
+      "visual": "java"
+    },
+    {
+      "repo": "Item_List_Management",
+      "name": "Item List Management",
+      "category": "Software",
+      "description": "A Java project focused on managing item lists. Explore the implementation on GitHub.",
+      "tags": [
+        "Java"
+      ],
+      "visual": "list"
+    }
+  ],
+  "profilePhoto": ""
+}

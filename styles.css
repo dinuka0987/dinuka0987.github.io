@@ -556,7 +556,21 @@ section[id], #main, #home { scroll-margin-top: 128px; }
 .activities { margin-top: 24px; }
 .certificates { border-radius: 24px; }
 .contact-section { border-radius: 24px 24px 0 0; }
-.email-link { padding-bottom: 12px; border-color: #577e72; }
+.email-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; max-width: 100%; padding: 12px 20px;
+  border: var(--glass-border); border-radius: 999px;
+  background: var(--glass-bg-strong); color: var(--green);
+  box-shadow: 0 4px 0 #9bafa14d, 0 8px 18px #1f3c3c12, var(--glass-highlight);
+  font-size: clamp(.875rem, 1.6vw, 1.125rem); text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, background-color 180ms ease-out;
+}
+.email-link:hover {
+  background: #ffffffa6; transform: translateY(-3px);
+  box-shadow: 0 7px 0 #9bafa14d, 0 14px 24px #1f3c3c24, var(--glass-highlight);
+}
+.email-link:active { transform: translateY(2px); box-shadow: var(--surface-inset-shadow); }
 .g3-social-link { display: inline-flex; align-items: center; gap: 10px; color: var(--green); min-height: 48px; }
 .g3-icon-shell {
   width: 48px; height: 48px; display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
@@ -649,7 +663,7 @@ footer > a.g3-backtop { font: 600 .75rem/1.45 var(--font); color: var(--green); 
   body::before { animation: none; }
   .g3-reveal { opacity: 1; --reveal-offset: 0px; transform: none !important; }
   .header.is-scrolled, .button:hover, .nav-contact:hover, .project-link:hover,
-  .g3-resume-link:hover, .g3-backtop:hover, .section-heading > .text-link:hover,
+  .g3-resume-link:hover, .g3-backtop:hover, .email-link:hover, .email-link:active, .section-heading > .text-link:hover,
   .header nav a:hover, .g3-footer-links a:hover, .filters button:hover,
   .tags span:hover, .g3-social-link:hover .g3-icon-shell, .g3-social-link:hover .g3-brand-icon { transform: none; }
 }

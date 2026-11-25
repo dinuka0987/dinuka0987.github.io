@@ -169,7 +169,7 @@ init();
   header.classList.add('g3-enhanced');
   setMenu(false);
   toggle.addEventListener('click', () => setMenu(!menuOpen));
-  navigation.addEventListener('click', event => {
+  header.addEventListener('click', event => {
     if (event.target.closest('a[href^="#"]')) setMenu(false);
   });
   document.addEventListener('keydown', event => {

@@ -145,3 +145,148 @@ async function init() {
 }
 document.querySelector('#year').textContent = new Date().getFullYear();
 init();
+
+/* Glass/3D presentation only. Project fetching, sorting, filtering and copy above
+   are intentionally unchanged. Delegation also covers newly rendered cards. */
+(() => {
+  if (typeof window === 'undefined') return;
+  const header = document.querySelector('.header');
+  if (!header) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const mobile = window.matchMedia('(max-width: 700px)');
+  const toggle = header.querySelector('.nav-toggle');
+  const navigation = header.querySelector('#primary-navigation');
+  let menuOpen = false;
+  function setMenu(open, restoreFocus = false) {
+    menuOpen = mobile.matches && open;
+    navigation.hidden = mobile.matches && !menuOpen;
+    navigation.inert = mobile.matches && !menuOpen;
+    toggle.setAttribute('aria-expanded', String(menuOpen));
+    toggle.setAttribute('aria-label', menuOpen ? 'Close navigation menu' : 'Open navigation menu');
+    if (restoreFocus) toggle.focus();
+  }
+  header.classList.add('g3-enhanced');
+  setMenu(false);
+  toggle.addEventListener('click', () => setMenu(!menuOpen));
+  navigation.addEventListener('click', event => {
+    if (event.target.closest('a[href^="#"]')) setMenu(false);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menuOpen) setMenu(false, true);
+  });
+  document.addEventListener('pointerdown', event => {
+    if (menuOpen && !header.contains(event.target)) setMenu(false);
+  });
+  mobile.addEventListener('change', () => setMenu(false));
+
+  const sectionIds = ['home', 'about', 'projects', 'skills', 'credentials', 'contact'];
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+  const sectionLinks = document.querySelectorAll('.header a[href^="#"], .g3-footer-links a[href^="#"]');
+  function updateNavigation() {
+    header.classList.toggle('is-scrolled', window.scrollY > 32);
+    const line = header.getBoundingClientRect().bottom + 40;
+    const atBottom = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+    const current = atBottom ? 'contact' : [...sections].reverse().find(section => section.getBoundingClientRect().top <= line)?.id || 'home';
+    sectionLinks.forEach(link => {
+      const active = link.getAttribute('href') === '#' + current;
+      link.classList.toggle('is-active', active);
+      if (active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    const spy = new IntersectionObserver(updateNavigation, {rootMargin:'-110px 0px -45% 0px', threshold:[0,.1,.5]});
+    sections.forEach(section => spy.observe(section));
+  }
+  let scrollFrame = 0;
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => { scrollFrame = 0; updateNavigation(); });
+  }, {passive:true});
+  updateNavigation();
+
+  const tiltRoots = new WeakSet();
+  function initTilt(root = document) {
+    if (tiltRoots.has(root)) return () => {};
+    tiltRoots.add(root);
+    const selector = '[data-tilt], .project-card:not(.ui-skeleton-card), .skill-row, .education, .activities';
+    let active = null, frame = 0, pending = null;
+    function reset() {
+      cancelAnimationFrame(frame); frame = 0; pending = null;
+      if (!active) return;
+      active.classList.remove('is-tilting');
+      ['--tilt-x','--tilt-y','--glare-x','--glare-y'].forEach(name => active.style.removeProperty(name));
+      active = null;
+    }
+    root.addEventListener('pointermove', event => {
+      if (reduceMotion.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
+      const card = event.target.closest?.(selector);
+      if (!card) { reset(); return; }
+      if (active !== card) { reset(); active = card; }
+      pending = {card, x:event.clientX, y:event.clientY};
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (!pending || reduceMotion.matches || !finePointer.matches) { reset(); return; }
+        const {card,x,y} = pending, rect = card.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const px = Math.max(0, Math.min(1, (x-rect.left)/rect.width));
+        const py = Math.max(0, Math.min(1, (y-rect.top)/rect.height));
+        card.style.setProperty('--tilt-x', ((.5-py)*12).toFixed(2)+'deg');
+        card.style.setProperty('--tilt-y', ((px-.5)*12).toFixed(2)+'deg');
+        card.style.setProperty('--glare-x', (px*100).toFixed(1)+'%');
+        card.style.setProperty('--glare-y', (py*100).toFixed(1)+'%');
+        card.classList.add('is-tilting');
+      });
+    }, {passive:true});
+    root.addEventListener('pointerout', event => {
+      if (active && (!event.relatedTarget || !active.contains(event.relatedTarget))) reset();
+    }, {passive:true});
+    root.addEventListener('pointercancel', reset, {passive:true});
+    window.addEventListener('blur', reset);
+    finePointer.addEventListener('change', reset);
+    reduceMotion.addEventListener('change', reset);
+    return reset;
+  }
+  initTilt();
+  // Reusable entry point for an optional future UI subtree; no dependencies.
+  window.portfolioGlass = {initTilt};
+
+  if ('IntersectionObserver' in window) {
+    const seen = new WeakSet();
+    const reveal = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('is-revealed'); reveal.unobserve(entry.target); }
+      });
+    }, {threshold:.06, rootMargin:'0px 0px -20px 0px'});
+    function observeCards(scope) {
+      const cards = scope.querySelectorAll('.about-copy, .project-card:not(.ui-skeleton-card), .skill-row, .education, .activities, .contact-bottom');
+      cards.forEach((card,index) => {
+        if (seen.has(card)) return;
+        seen.add(card);
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--reveal-delay', (index%3)*45+'ms');
+        card.classList.add('g3-reveal');
+        if (reduceMotion.matches || rect.top < window.innerHeight) card.classList.add('is-revealed');
+        else reveal.observe(card);
+      });
+    }
+    observeCards(document);
+    const watchCards = new MutationObserver(records => {
+      records.forEach(record => {
+        record.removedNodes.forEach(node => {
+          if (node.nodeType === 1) reveal.unobserve(node);
+        });
+        observeCards(record.target);
+      });
+    });
+    ['project-grid','certificate-list'].forEach(id => {
+      const container = document.getElementById(id);
+      if (container) watchCards.observe(container, {childList:true});
+    });
+    reduceMotion.addEventListener('change', () => {
+      if (reduceMotion.matches) document.querySelectorAll('.g3-reveal').forEach(card => { card.classList.add('is-revealed'); reveal.unobserve(card); });
+    });
+  }
+})();

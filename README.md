@@ -125,3 +125,28 @@ All transitions are 150-250ms. Continuous loading animations stop under `prefers
 - `editor.js`: confirmation wrappers around existing removal actions, status-driven notifications, native validation presentation and optional range presentation.
 - `tests/github-projects.test.cjs`: ARIA-state assertions and contrast regression checks alongside existing GitHub-sync tests.
 - `README.md`: this guide. No source files created, renamed, moved or deleted; no dependencies or build configuration changed.
+
+## Glassmorphism and 3D presentation
+
+The subsequent glass skin keeps the cream `#efe7db` base and teal `#0f4f4f` accent. Its variables are in the same first `:root` block of `styles.css`; the complete glass/3D skin is grouped at the end of that file. A fixed CSS background supplies slowly drifting teal, sand, and peach orbs and a tiny inline SVG noise texture. There are no image downloads or animation dependencies.
+
+Muted text is darkened to `#4f493f` to maintain at least 4.5:1 contrast even over the darkest teal-orb blend and subtle noise; the main teal/cream pair remains 7.60:1.
+
+### Apply the reusable styles
+
+- **Glass surface:** add `g3-glass` to an existing element. It uses a translucent border, 16px backdrop blur/saturation, shadow and inner highlight. Unsupported browsers get `--glass-fallback` instead. Nested chips and certificate wrappers use translucent surfaces without another blur pass.
+- **3D card:** add `g3-tilt` and `data-tilt` to an existing card. The single delegated handler in the appended presentation block of `app.js` covers it automatically, including elements created later. Rotation is clamped to 6 degrees per axis, below the requested 8-degree limit. Moving the pointer outside resets tilt and glare. Touch/coarse-pointer devices and reduced-motion users do not tilt.
+- **Buttons:** existing `button`, `primary`, `secondary`, `project-link` and `nav-contact` hooks receive the raised-key treatment. `g3-resume-link` and `g3-backtop` add that treatment to existing text links. Hover lifts, activation presses, native disabled states remain muted, and focus rings remain visible. No link destinations or button actions changed.
+- **Social icons:** `g3-social-link` contains a `g3-icon-shell` and an inline `g3-brand-icon` SVG. Keep `aria-label="GitHub profile"` / `"LinkedIn profile"`, `target="_blank"` and `rel="noopener noreferrer"`. The existing visible labels sit in `g3-social-label` and are visually hidden on narrow screens; the accessible names remain available. The Credentials LinkedIn text link remains in place with its icon.
+- **Navbar:** `nav-toggle` controls the existing navigation, now identified by `primary-navigation`. `aria-expanded` and its accessible label track the menu. Escape restores focus to the toggle; selecting a link or clicking outside closes the menu. The normal desktop navigation returns when the viewport widens. Scrollspy uses IntersectionObserver, `is-active`, and `aria-current="location"`. The compact scroll treatment uses a transform rather than changing document flow.
+- **Scroll reveal:** existing cards and panels receive `g3-reveal` and `is-revealed` as presentation classes. IntersectionObserver reveals offscreen elements with a short 0/45/90ms stagger. Visible cards are not hidden again after a GitHub refresh. Without IntersectionObserver, content remains visible.
+- **Footer:** the existing footer remains the final page region. It now includes the requested quick links and brand-icon links, the unchanged copyright/year hook, a Resume link and the original Back to top destination. It stacks on mobile and stays in normal document flow.
+
+All essential content is present without the effects. `prefers-reduced-motion` disables orb movement, tilt, image zoom and reveal transforms. `will-change` is applied only during active tilt. Safari's `-webkit-backdrop-filter` is included; Firefox/Chromium use the standard property. Translucent surfaces have an opaque fallback and text retains the original high-contrast palette.
+
+### Files touched by the glass update
+
+1. `styles.css`: glass tokens, fixed background, floating nav, surfaces, physical-key buttons, footer, social icons and motion/fallback rules.
+2. `index.html`: mobile-menu button, added navigation ID, additive tilt classes/data attributes, inline social SVGs, requested footer links, and asset cache versions. Existing sections, copy, IDs and links remain.
+3. `app.js`: a separately commented presentation-only block appended after the existing implementation. The GitHub loader and filter implementation above it are unchanged.
+4. `README.md`: this usage guide. No files, directories, routes, dependencies or build configuration were added, moved, renamed or removed.

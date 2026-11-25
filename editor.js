@@ -12,7 +12,7 @@ function assetButton(key, file, path, outputName) {
   prepared.get(key)?.remove();
   const row = document.createElement('p');
   const button = document.createElement('button'); button.className = 'button secondary'; button.type = 'button';
-  button.textContent = 'Download ' + outputName + ' ↓'; button.onclick = () => download(file, outputName);
+  button.textContent = 'Download ' + outputName; button.onclick = () => download(file, outputName);
   const note = document.createElement('small'); note.textContent = ' Upload to: ' + path;
   row.append(button, note); document.querySelector('#asset-downloads').append(row); prepared.set(key, row);
 }

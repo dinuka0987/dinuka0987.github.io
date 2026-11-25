@@ -422,6 +422,10 @@ progress.ui-progress::-moz-progress-bar { background: var(--green); border-radiu
 .editor .button.primary { color: var(--on-primary); }
 .editor .button.secondary { color: var(--green); }
 
+/* Keep existing hooks while removing space reserved for decorative arrows. */
+.button > span:empty, .nav-contact > span:empty, .project-link > span:empty,
+.email-link > span:empty, .small-icon:empty { display: none; }
+
 /* Glass + 3D skin. Original hooks, grids and section sequence are retained. */
 body { position: relative; isolation: isolate; }
 body::before, body::after { content: ""; position: fixed; pointer-events: none; }

@@ -36,7 +36,7 @@ async function init() {
     function render(filter = activeFilter) {
       activeFilter = filter;
       const visible = projects.filter(p => filter === 'All' || (filter === 'Featured' ? featured.includes(p.repo) : p.category === filter));
-      grid.innerHTML = visible.map(p => `<article class="project-card"><div class="project-art ${escapeHTML(p.visual)}" aria-hidden="true">${featured.includes(p.repo) ? '<span class="featured-label">★ FEATURED</span>' : ''}${artwork(p.visual)}<span class="art-caption">PROJECT INTERFACE / ILLUSTRATION</span></div><div class="project-content"><span class="project-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.description)}</p><div class="tags">${p.tags.map(t=>`<span>${escapeHTML(t)}</span>`).join('')}</div><a class="project-link" href="https://github.com/dinuka0987/${encodeURIComponent(p.repo)}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHTML(p.name)} source on GitHub">Explore project <span>↗</span></a></div></article>`).join('') || '<p>No projects in this selection yet.</p>';
+      grid.innerHTML = visible.map(p => `<article class="project-card"><div class="project-art ${escapeHTML(p.visual)}" aria-hidden="true">${featured.includes(p.repo) ? '<span class="featured-label">★ FEATURED</span>' : ''}${artwork(p.visual)}<span class="art-caption">PROJECT INTERFACE / ILLUSTRATION</span></div><div class="project-content"><span class="project-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.description)}</p><div class="tags">${p.tags.map(t=>`<span>${escapeHTML(t)}</span>`).join('')}</div><a class="project-link" href="https://github.com/dinuka0987/${encodeURIComponent(p.repo)}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHTML(p.name)} source on GitHub">Explore project <span></span></a></div></article>`).join('') || '<p>No projects in this selection yet.</p>';
       if (!visible.length) {
         grid.innerHTML = '<div class="ui-empty"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><p>No projects in this selection yet.</p><button class="button primary" type="button" data-clear-filters>Clear Filters</button></div>';
       }
@@ -116,7 +116,7 @@ async function init() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="View ${escapeHTML(c.title)} certificate">
-                  View certificate <span>↗</span>
+                  View certificate <span></span>
                 </a>
               ` : ''}
 
@@ -127,7 +127,7 @@ async function init() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Verify ${escapeHTML(c.title)} credential">
-                  Verify credential <span>↗</span>
+                  Verify credential <span></span>
                 </a>
               ` : ''}
             </div>
@@ -139,7 +139,7 @@ async function init() {
   } catch (error) {
     grid.setAttribute('aria-busy', 'false');
     document.querySelector('#project-sync-status').setAttribute('aria-busy', 'false');
-    grid.innerHTML = '<p>Project details could not load. <a class="text-link" href="https://github.com/dinuka0987?tab=repositories">Explore my work on GitHub ↗</a></p>';
+    grid.innerHTML = '<p>Project details could not load. <a class="text-link" href="https://github.com/dinuka0987?tab=repositories">Explore my work on GitHub</a></p>';
     statusText.textContent = 'Project details unavailable.';
   }
 }

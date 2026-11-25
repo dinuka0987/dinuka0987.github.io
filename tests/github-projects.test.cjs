@@ -58,7 +58,7 @@ test('a valid empty account clears old cards; malformed responses preserve fallb
 });
 test('page keeps active filters during periodic updates and skips background tabs',async()=>{
   const elements=new Map();
-  function element(key){if(!elements.has(key)) elements.set(key,{innerHTML:'',textContent:'',addEventListener(){}});return elements.get(key);}
+  function element(key){if(!elements.has(key)) elements.set(key,{innerHTML:'',textContent:'',attributes:{},setAttribute(name,value){this.attributes[name]=value;},addEventListener(){}});return elements.get(key);}
   const buttons=['All','Featured','Security'].map(filter=>({dataset:{filter},classList:{toggle(){}},setAttribute(){},addEventListener(event,fn){this.click=fn;}}));
   let refresh;let calls=0;
   const document={hidden:false,querySelector:element,querySelectorAll:selector=>selector==='[data-filter]'?buttons:[]};
@@ -66,11 +66,26 @@ test('page keeps active filters during periodic updates and skips background tab
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../app.js'),'utf8'),context);
   await new Promise(setImmediate);
   assert.match(element('#project-grid').innerHTML,/New project/);
+  assert.equal(element('#project-grid').attributes['aria-busy'],'false');
+  assert.equal(element('#project-sync-status').attributes['aria-busy'],'false');
   buttons[2].click();
   assert.doesNotMatch(element('#project-grid').innerHTML,/New project/);
   refresh();await new Promise(setImmediate);
   assert.equal(element('#project-status').textContent,'1 projects shown: Security.');
   document.hidden=true;refresh();assert.equal(calls,2);
+});
+test('soft UI text and control boundaries have sufficient contrast',()=>{
+  const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
+  function color(token){return css.match(new RegExp('--'+token+':\\s*(#[0-9a-f]{6})','i'))[1];}
+  function luminance(hex){const [r,g,b]=hex.slice(1).match(/../g).map(s=>parseInt(s,16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);return .2126*r+.7152*g+.0722*b;}
+  function ratio(a,b){const x=luminance(color(a)),y=luminance(color(b));return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+  for(const foreground of ['text','muted','green','error']){
+    for(const background of ['bg','panel','surface-inset']) assert.ok(ratio(foreground,background)>=4.5,`${foreground} on ${background}`);
+  }
+  assert.ok(ratio('green','on-primary')>=4.5);
+  assert.ok(ratio('disabled-text','disabled-bg')>=4.5);
+  assert.ok(ratio('control-line','bg')>=3);
+  assert.ok(ratio('control-line','panel')>=3);
 });
 test('deployment and both pages include the shared GitHub loader',()=>{
   for (const [file,next] of [['index.html','app.js'],['editor.html','editor.js']]){

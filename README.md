@@ -63,3 +63,65 @@ The editor also discovers new repositories, so you can pin them immediately. To 
 No token or credentials are embedded in the page. If GitHub is offline or rate-limits requests, visitors see their last successfully loaded list, or the bundled project snapshot on a first visit. A status message identifies this fallback. The next scheduled refresh retries. Never put a GitHub token in browser code.
 
 Deploy `github-projects.js` together with both HTML files, app.js, editor.js, content.json, and the updated workflow. The workflow explicitly includes this shared script. Tests: `node --test tests/github-projects.test.cjs`.
+
+## Soft UI component guide
+
+The reference skin uses warm cream, deep teal, raised surfaces and inset controls. All design tokens live in the **first `:root` block of `styles.css`**. The existing token names (`--bg`, `--panel`, `--green`, etc.) remain supported. The skin is appended after the existing component rules, without changing layout grids, routes or section order.
+
+### Components used by the portfolio
+
+| Component | Location and usage |
+| --- | --- |
+| Primary and secondary buttons | Existing `.button.primary` / `.button.secondary` links and buttons. Native `disabled` uses muted beige; use the actual `disabled` attribute for buttons. All links keep their destinations. |
+| Pressed/loading state | `:active` adds an inset shadow. Set `aria-busy="true"` on a real asynchronous action's button and show its actual loading label, such as `Sending...`; a spinner is generated in CSS. Clear it when the operation finishes. No fake contact submission was added to the existing email link. |
+| Checkboxes and text fields | Existing editor controls use native input behavior, teal focus rings, inset surfaces and disabled styling. Existing required/URL validation now adds `aria-invalid`, an associated inline error and red boundary. `.ui-helper` provides supplementary helper text. |
+| Filter tabs | Existing `.filters` buttons retain their `role="group"` and `aria-pressed` semantics, since these filter a collection rather than change tab panels. Active filters use a raised surface. Tab and Space/Enter work natively. |
+| Cards and badges | Existing `.project-card`, `.project-link`, `.tags span` and `.featured-label` hooks receive the new skin. Existing descriptions, tags, featured order and certificate links are unchanged. |
+| Tooltip | The hero GitHub link has a labelled, hoverable `role="tooltip"`. Hover/focus opens it; Escape dismisses it. `.ui-tooltip-trigger` contains `.ui-tooltip`; associate them with `aria-describedby`. |
+| Skeleton and spinner | Initial placeholders live inside the existing project grid and are hidden from assistive technology. The grid and loading status use `aria-busy`; existing project loading replaces them. |
+| Empty state | An empty project filter displays its existing message with a new `Clear Filters` button. It invokes the original All work filter. |
+| Confirmation modal | Existing editor removal buttons open `#ui-confirm-dialog`. Cancel and Escape preserve the item; Delete calls the existing local removal handler. Native dialog focus containment is retained and focus returns to the relevant editor control. This does not delete files from GitHub. |
+| Toast stack and alert banner | Existing editor status messages drive up to three success/info/error toasts. The same message remains in the persistent `#editor-status` banner. Only the toast stack announces it, avoiding duplicate live-region announcements. Toasts disappear after six seconds. |
+| Icons | `.ui-icon` uses inline SVG with a 24-unit viewBox, 2px rounded strokes and teal color. `data-size="16"` or `"20"` selects smaller sizes. Decorative icons use `aria-hidden="true"`. |
+
+### Reusable patterns, intentionally not mounted
+
+The current site has no table, multi-page collection, multi-step form, team list, settings toggle or percentage setting. The following **CSS patterns** are provided in the existing stylesheet for future real content; no unrelated widgets, fake team members, or new workflows were introduced. Their application behavior must be wired to real data when used.
+
+| Pattern | Minimal usage |
+| --- | --- |
+| Surface / elevation | `.ui-surface` with `data-layer="raised"`, `"inset"`, or `"pressed"`; optionally `data-elevation="1"` through `"5"`. Default surface is flat. |
+| Radio | Native `<input type="radio" name="choice">` inside labelled controls; group options in a fieldset with a legend. Native arrow-key selection is preserved. |
+| Switch | `<input type="checkbox" class="ui-switch" role="switch" aria-label="Your real setting">`. Set `checked` for on; native Space toggles it. Persist only through the setting's actual handler. |
+| Percentage slider | `.ui-range` containing a labelled native `<input type="range" min="0" max="100" value="75">` and `<output>75%</output>`. The editor's existing input enhancement updates the floating output and `aria-valuetext` on input; initialize the output to the input value. Set `--range-value:75%` on the wrapper for initial placement. |
+| True tabs | `.ui-tabs` on a `role="tablist"` and labelled tab buttons with `aria-selected`, `aria-controls` and associated panels. CSS gives the active tab its raised state. Consumers must implement roving focus, arrow keys and panel visibility; the portfolio filters intentionally remain filter buttons. |
+| Breadcrumbs | A labelled navigation containing an ordered list with `.ui-breadcrumbs`; mark the final item `aria-current="page"`. |
+| Pagination | A labelled `.ui-pagination` navigation with Prev / numbered / Next buttons. `aria-current="page"` gives the active number a teal fill. Wire real pagination and disable unavailable actions; do not hide existing projects merely to show this pattern. |
+| Four-step indicator | An ordered `.ui-stepper` with four list items and `aria-current="step"` on the current one. Use the tooltip pattern for a `Current Step` explanation. This is a visual indicator, not an added wizard. |
+| Avatar list / group | `.ui-list-item` with an image `.ui-avatar`, title and description; `.ui-avatar-group` groups supplied images and `data-active="true"` adds the teal ring. Use meaningful image alt text; don't invent people. |
+| New / Beta / count badge | `.ui-badge`, optionally `data-tone="primary"`, around the real status or count. Include the meaning of numeric counts in the accessible label. |
+| Compact sortable header | `.ui-table` with semantic `th` cells, `scope="col"`, `aria-sort` and a labelled button in sortable headers. CSS styles the header; actual sorting and updating `aria-sort` belong to the table's real data handler. |
+| Linear progress | A labelled native `<progress class="ui-progress" max="100" value="50">50%</progress>` plus a visible percentage. Feed real progress values; no synthetic upload or GitHub sync percentage is shown. |
+| Standalone spinner | `<span class="ui-spinner" aria-hidden="true"></span>` beside a textual `role="status"` label for a real pending operation. |
+
+Button state examples (patterns only):
+
+```html
+<button class="button primary">Submit Now</button>
+<button class="button primary" aria-busy="true" disabled>Sending...</button>
+<button class="button primary" disabled>Not Available</button>
+```
+
+Use busy without disabled if the action must remain focusable, and guard repeated activation in its real handler. `aria-disabled` alone does not disable links: use a native button or suppress navigation explicitly in the owning handler. No existing portfolio link is disabled.
+
+All transitions are 150-250ms. Continuous loading animations stop under `prefers-reduced-motion`; loading text remains visible. Forced-color mode retains control boundaries. Contrast regression checks cover text, muted text, teal, errors, disabled labels and control borders. Run `node --test tests/github-projects.test.cjs`.
+
+### File-by-file change record
+
+- `styles.css`: central tokens and in-place soft UI component skin, reusable patterns, focus/reduced-motion/forced-color rules.
+- `index.html`: theme-color, stylesheet/app cache versions, one supplementary tooltip, project loading placeholders and busy attributes inside existing hooks.
+- `app.js`: loading ARIA state, empty-filter recovery and tooltip dismissal; GitHub loading, sorting and filtering logic unchanged.
+- `editor.html`: stylesheet/script cache versions, banner class, toast live region and one native confirmation dialog.
+- `editor.js`: confirmation wrappers around existing removal actions, status-driven notifications, native validation presentation and optional range presentation.
+- `tests/github-projects.test.cjs`: ARIA-state assertions and contrast regression checks alongside existing GitHub-sync tests.
+- `README.md`: this guide. No source files created, renamed, moved or deleted; no dependencies or build configuration changed.

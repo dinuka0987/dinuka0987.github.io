@@ -37,6 +37,10 @@ async function init() {
       activeFilter = filter;
       const visible = projects.filter(p => filter === 'All' || (filter === 'Featured' ? featured.includes(p.repo) : p.category === filter));
       grid.innerHTML = visible.map(p => `<article class="project-card"><div class="project-art ${escapeHTML(p.visual)}" aria-hidden="true">${featured.includes(p.repo) ? '<span class="featured-label">★ FEATURED</span>' : ''}${artwork(p.visual)}<span class="art-caption">PROJECT INTERFACE / ILLUSTRATION</span></div><div class="project-content"><span class="project-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.description)}</p><div class="tags">${p.tags.map(t=>`<span>${escapeHTML(t)}</span>`).join('')}</div><a class="project-link" href="https://github.com/dinuka0987/${encodeURIComponent(p.repo)}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHTML(p.name)} source on GitHub">Explore project <span>↗</span></a></div></article>`).join('') || '<p>No projects in this selection yet.</p>';
+      if (!visible.length) {
+        grid.innerHTML = '<div class="ui-empty"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><p>No projects in this selection yet.</p><button class="button primary" type="button" data-clear-filters>Clear Filters</button></div>';
+      }
+      grid.setAttribute('aria-busy', 'false');
       statusText.textContent = `${visible.length} projects shown${filter === 'All' ? '' : ': ' + filter}.`;
     }
     render();
@@ -51,7 +55,10 @@ async function init() {
         document.querySelector('#project-sync-status').textContent = result.source === 'github'
           ? 'Projects updated from GitHub.'
           : 'Showing saved projects. GitHub updates are temporarily unavailable.';
-      } finally { refreshing = false; }
+      } finally {
+        document.querySelector('#project-sync-status').setAttribute('aria-busy', 'false');
+        refreshing = false;
+      }
     }
     refreshProjects();
     setInterval(() => { if (!document.hidden) refreshProjects(); }, 5 * 60 * 1000);
@@ -59,6 +66,16 @@ async function init() {
       document.querySelectorAll('[data-filter]').forEach(b => { b.classList.toggle('active', b === button); b.setAttribute('aria-pressed', String(b === button)); });
       render(button.dataset.filter);
     }));
+    // Empty-state action uses the existing filter button and its behavior.
+    grid.addEventListener('click', event => {
+      if (event.target.closest('[data-clear-filters]')) document.querySelector('[data-filter="All"]').click();
+    });
+    document.querySelectorAll('.ui-tooltip-trigger').forEach(trigger => {
+      trigger.addEventListener('keydown', event => {
+        if (event.key === 'Escape') trigger.classList.add('ui-tooltip-dismissed');
+      });
+      ['blur', 'pointerleave'].forEach(type => trigger.addEventListener(type, () => trigger.classList.remove('ui-tooltip-dismissed')));
+    });
     if (content.resume) document.querySelectorAll('.resume-link').forEach(a => a.href = safeURL(content.resume));
     if (content.certificates?.length) {
   document.querySelector('#certificate-list').innerHTML =
@@ -120,6 +137,8 @@ async function init() {
     }).join('');
 }
   } catch (error) {
+    grid.setAttribute('aria-busy', 'false');
+    document.querySelector('#project-sync-status').setAttribute('aria-busy', 'false');
     grid.innerHTML = '<p>Project details could not load. <a class="text-link" href="https://github.com/dinuka0987?tab=repositories">Explore my work on GitHub ↗</a></p>';
     statusText.textContent = 'Project details unavailable.';
   }

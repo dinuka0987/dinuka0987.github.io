@@ -38,6 +38,7 @@ function addCertificate(value = {}) {
     statusText.textContent = 'Certificate prepared. Download its file below and upload it to the indicated path.';
   };
   const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'button secondary'; remove.textContent = 'Remove certificate'; remove.onclick = () => { fieldset.remove(); prepared.get(key)?.remove(); prepared.delete(key); };
+  guardRemoval(remove, '#add-certificate');
   fieldset.append(remove); document.querySelector('#certificate-editor').append(fieldset);
 }
 async function initEditor() {
@@ -128,4 +129,110 @@ document.querySelector('#remove-photo').onclick = () => {
   prepared.delete('photo');
   statusText.textContent = 'Photo removed from the prepared content. Download and publish content.json to apply this change.';
 };
+/* UI-only enhancements wrap existing actions; file preparation and publishing
+   behavior above remain the source of truth. */
+function guardRemoval(button, focusFallback) {
+  button.addEventListener('click', async event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const dialog = document.querySelector('#ui-confirm-dialog');
+    if (!dialog || dialog.open) return;
+    document.querySelector('#ui-confirm-title').textContent = button.textContent.trim() + '?';
+    dialog.returnValue = 'cancel';
+    const confirmed = new Promise(resolve => dialog.addEventListener('close', () => resolve(dialog.returnValue === 'delete'), {once:true}));
+    dialog.showModal();
+    if (await confirmed) {
+      button.onclick?.call(button, event);
+      if (focusFallback === '#add-certificate') statusText.textContent = 'Certificate removed from prepared content.';
+      document.querySelector(focusFallback)?.focus();
+    } else button.focus();
+  }, {capture:true});
+}
+function installEditorUI() {
+  const stack = document.querySelector('#ui-toast-stack');
+  const dialog = document.querySelector('#ui-confirm-dialog');
+  dialog.addEventListener('keydown', event => {
+    if (event.key !== 'Tab') return;
+    const buttons = [...dialog.querySelectorAll('button:not([disabled])')];
+    const first = buttons[0], last = buttons[buttons.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); first.focus();
+    }
+  });
+  let lastMessage = '';
+  // The persistent banner remains visible; only the toast stack announces it.
+  statusText.setAttribute('aria-live', 'off');
+  statusText.setAttribute('aria-busy', 'true');
+  new MutationObserver(() => {
+    const text = statusText.textContent.trim();
+    if (!text || text === lastMessage) return;
+    lastMessage = text;
+    const isError = /^(could not|please|choose|unknown|this image|verification|certificate files)/i.test(text);
+    const tone = isError ? 'error' : /downloaded|prepared|loaded|removed/i.test(text) ? 'success' : 'info';
+    statusText.dataset.tone = tone;
+    statusText.setAttribute('aria-busy', 'false');
+    const toast = document.createElement('div');
+    toast.className = 'ui-toast';
+    toast.dataset.tone = tone;
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', 'ui-icon');
+    icon.setAttribute('data-size', '20');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('aria-hidden', 'true');
+    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    outline.setAttribute('d', tone === 'success' ? 'm5 12 4 4L19 6' : 'M12 8h.01M12 11v6M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z');
+    icon.append(outline);
+    const message = document.createElement('span');
+    message.textContent = text;
+    toast.append(icon, message);
+    stack.append(toast);
+    while (stack.children.length > 3) stack.firstElementChild.remove();
+    setTimeout(() => toast.remove(), 6000);
+  }).observe(statusText, {childList:true, subtree:true, characterData:true});
+
+  const fieldErrors = new WeakMap();
+  let errorCount = 0;
+  document.addEventListener('invalid', event => {
+    const input = event.target;
+    if (!input.matches('.editor input, .editor textarea, .editor select')) return;
+    let message = fieldErrors.get(input);
+    if (!message) {
+      message = document.createElement('small');
+      message.className = 'ui-field-error';
+      message.id = 'ui-field-error-' + ++errorCount;
+      message.setAttribute('role', 'alert');
+      (input.closest('label') || input).insertAdjacentElement('afterend', message);
+      input.setAttribute('aria-describedby', [input.getAttribute('aria-describedby'), message.id].filter(Boolean).join(' '));
+      fieldErrors.set(input, message);
+    }
+    input.setAttribute('aria-invalid', 'true');
+    message.hidden = false;
+    message.textContent = input.validationMessage;
+  }, true);
+  function updateInput(event) {
+    const input = event.target;
+    const error = fieldErrors.get(input);
+    if (error && input.validity.valid) {
+      input.removeAttribute('aria-invalid');
+      error.hidden = true;
+      error.textContent = '';
+    }
+    // Optional native slider presentation, for future real percentage controls.
+    if (input.matches('.ui-range input[type="range"]')) {
+      const min = Number(input.min || 0), max = Number(input.max || 100);
+      const percentage = max > min ? Math.round((Number(input.value) - min) / (max - min) * 100) : 0;
+      const wrapper = input.closest('.ui-range');
+      wrapper.style.setProperty('--range-value', percentage + '%');
+      const output = wrapper.querySelector('output');
+      if (output) output.value = percentage + '%';
+      input.setAttribute('aria-valuetext', percentage + '%');
+    }
+  }
+  document.addEventListener('input', updateInput);
+  document.addEventListener('change', updateInput);
+  guardRemoval(document.querySelector('#remove-photo'), '#profile-file');
+}
+installEditorUI();
 initEditor();

@@ -18,11 +18,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+      - name: Verify project synchronization
+        run: node --test tests/github-projects.test.cjs
       - uses: actions/configure-pages@v5
       - name: Prepare public files
         run: |
           mkdir _site
-          cp index.html styles.css app.js content.json editor.html editor.js .nojekyll _site/
+          cp index.html styles.css app.js github-projects.js content.json editor.html editor.js .nojekyll _site/
           cp -r assets _site/
       - uses: actions/upload-pages-artifact@v4
         with:

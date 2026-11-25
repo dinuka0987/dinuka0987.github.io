@@ -1,6 +1,6 @@
 # Dinuka Dilshan — portfolio
 
-A responsive landing page in HTML, CSS, and vanilla JavaScript. No package installation, paid hosting, database, or secret keys required. Includes seven projects verified against public GitHub repositories, filters, featured ordering, skills, education, contact links, certificates, and a downloadable resume.
+A responsive landing page in HTML, CSS, and vanilla JavaScript. No package installation, paid hosting, database, or secret keys required. Automatically loads public projects from GitHub, filters, featured ordering, skills, education, contact links, certificates, and a downloadable resume.
 
 ## Preview locally
 
@@ -40,7 +40,7 @@ The editor has no remote write access. It creates downloads on your device; GitH
 ## Other edits
 
 - Biography, skills, education, and contact: edit `index.html`.
-- Projects: edit the `projects` list in `content.json`. Each entry uses `repo`, `name`, `description`, `category` (`Security`, `Mobile`, `Web`, or `Software`), `tags`, and `visual` (`scanner`, `balance`, `volt`, `planner`, `card`, `java`, or `list`). Projects are a curated snapshot, not a live API feed; add future repositories here.
+- Projects: edit the `projects` list in `content.json`. Each entry uses `repo`, `name`, `description`, `category` (`Security`, `Mobile`, `Web`, or `Software`), `tags`, and `visual` (`scanner`, `balance`, `volt`, `planner`, `card`, `java`, or `list`). These entries provide optional presentation overrides and a fallback snapshot; new public repositories are discovered automatically.
 - Styling: edit `styles.css`. Google Fonts are optional; system fonts work if offline.
 - Decorative project previews are explicitly labeled illustrations, not actual app screenshots.
 
@@ -51,3 +51,15 @@ The supplied resume is included unchanged. It contains a placeholder under Acade
 ## Profile photo
 
 Open `editor.html`, choose a JPG, PNG, or WebP portrait, and download the prepared image and updated `content.json`. Upload the image to the indicated `assets/profile-photo` path and replace `content.json` in the repository root. Commit both files. The photo replaces the diagram in the hero section. Until a photo is supplied, the diagram remains visible. The editor's Remove profile photo button restores the diagram after publishing the updated content.
+
+## Automatic GitHub projects
+
+The project section loads all public repositories owned by `dinuka0987` on every page visit and refreshes every five minutes while the tab is visible. Pagination includes repositories beyond the first 100. New repositories require no portfolio edit or redeployment after this fix is installed. Private repositories are never displayed. Forks and archived public repositories are included unless excluded below.
+
+Featured projects retain the order in `featured`; other projects show newest-created first. Existing custom names, descriptions, categories, and illustrations are preserved. Newly discovered projects use their GitHub descriptions, language, and topics; categories are inferred and can be overridden in `content.json`. Set a repository description on GitHub for useful automatic summaries.
+
+The editor also discovers new repositories, so you can pin them immediately. To hide a repository, add its exact name to `github.excludeRepos` in `content.json`. An empty array includes every public repository.
+
+No token or credentials are embedded in the page. If GitHub is offline or rate-limits requests, visitors see their last successfully loaded list, or the bundled project snapshot on a first visit. A status message identifies this fallback. The next scheduled refresh retries. Never put a GitHub token in browser code.
+
+Deploy `github-projects.js` together with both HTML files, app.js, editor.js, content.json, and the updated workflow. The workflow explicitly includes this shared script. Tests: `node --test tests/github-projects.test.cjs`.

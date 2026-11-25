@@ -43,6 +43,8 @@ function addCertificate(value = {}) {
 async function initEditor() {
   try {
     const r = await fetch('content.json'); if (!r.ok) throw new Error('Unable to load'); content = await r.json();
+    const projectResult = await GitHubProjects.load(content);
+    content.projects = projectResult.projects;
     if (content.profilePhoto) {
       document.querySelector('#photo-preview').src = content.profilePhoto;
       document.querySelector('#photo-preview').hidden = false;

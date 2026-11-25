@@ -72,85 +72,133 @@
   ],
   "projects": [
     {
-      "repo": "python-vulnerability-scanner",
       "name": "Python Vulnerability Scanner",
-      "category": "Security",
       "description": "Audit Python dependencies against known vulnerabilities with OSV intelligence, a command-line tool, and a Flask web interface.",
+      "category": "Security",
       "tags": [
         "Python",
         "Flask",
         "OSV API"
       ],
-      "visual": "scanner"
+      "visual": "scanner",
+      "repo": "python-vulnerability-scanner",
+      "createdAt": "2026-07-06T13:52:23Z"
     },
     {
-      "repo": "Biz_balance",
       "name": "BizBalance",
-      "category": "Mobile",
       "description": "An offline-first finance app for small businesses, with income and expense tracking, budgets, reports, and local backups.",
+      "category": "Mobile",
       "tags": [
         "Flutter",
         "Dart",
         "Local storage"
       ],
-      "visual": "balance"
+      "visual": "balance",
+      "repo": "Biz_balance",
+      "createdAt": "2026-06-13T06:33:32Z"
     },
     {
-      "repo": "Voltify",
       "name": "Voltify",
-      "category": "Web",
       "description": "An EV parking and charging system with slot booking, charging rates, an admin dashboard, and real-time updates.",
+      "category": "Web",
       "tags": [
         "React",
         "Node.js",
         "MongoDB"
       ],
-      "visual": "volt"
+      "visual": "volt",
+      "repo": "Voltify",
+      "createdAt": "2026-06-22T19:26:32Z"
     },
     {
-      "repo": "Student_Planner_Application",
-      "name": "Student Planner",
-      "category": "Mobile",
-      "description": "A Flutter application that brings class timetables, assignments, exams, and study notes into one place.",
+      "name": "Lee POS System",
+      "description": "A retail point-of-sale system with barcode checkout, inventory management, receipt printing, sales reporting, and offline checkout synchronization.",
+      "category": "Web",
       "tags": [
-        "Flutter",
-        "Dart",
-        "Firebase"
+        "React",
+        "NestJS",
+        "PostgreSQL"
       ],
-      "visual": "planner"
+      "visual": "java",
+      "repo": "Lee-POS-System",
+      "createdAt": "2026-11-24T11:38:34Z"
     },
     {
-      "repo": "Credit-card-checker",
+      "name": "Personal Portfolio",
+      "description": "My portfolio showcasing software projects, technical skills, education, and certifications.",
+      "category": "Web",
+      "tags": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "visual": "java",
+      "repo": "dinuka0987.github.io",
+      "createdAt": "2026-11-17T19:11:04Z"
+    },
+    {
+      "name": "Food Ordering Management",
+      "description": "A Java project exploring food ordering management. Explore the source code on GitHub.",
+      "category": "Software",
+      "tags": [
+        "Java"
+      ],
+      "visual": "java",
+      "repo": "Food_Ordering_Manage",
+      "createdAt": "2026-11-13T20:41:12Z"
+    },
+    {
+      "name": "Item List Management",
+      "description": "A Java project focused on managing item lists. Explore the implementation on GitHub.",
+      "category": "Software",
+      "tags": [
+        "Java"
+      ],
+      "visual": "list",
+      "repo": "Item_List_Management",
+      "createdAt": "2026-10-17T16:25:50Z"
+    },
+    {
       "name": "Credit Card Checker",
-      "category": "Security",
       "description": "An educational card security simulation with an interactive card preview and a seeded demonstration database. Use test data only.",
+      "category": "Security",
       "tags": [
         "Next.js",
         "Express",
         "MongoDB"
       ],
-      "visual": "card"
+      "visual": "card",
+      "repo": "Credit-card-checker",
+      "createdAt": "2026-07-25T19:51:27Z"
     },
     {
-      "repo": "Food_Ordering_Manage",
-      "name": "Food Ordering Management",
-      "category": "Software",
-      "description": "A Java project exploring food ordering management. Explore the source code on GitHub.",
+      "name": "Student Planner",
+      "description": "A Flutter application that brings class timetables, assignments, exams, and study notes into one place.",
+      "category": "Mobile",
       "tags": [
-        "Java"
+        "Flutter",
+        "Dart",
+        "Firebase"
       ],
-      "visual": "java"
+      "visual": "planner",
+      "repo": "Student_Planner_Application",
+      "createdAt": "2026-06-05T13:22:36Z"
     },
     {
-      "repo": "Item_List_Management",
-      "name": "Item List Management",
-      "category": "Software",
-      "description": "A Java project focused on managing item lists. Explore the implementation on GitHub.",
+      "name": "University Learning Platform",
+      "description": "A university learning platform project built with Laravel. Explore the implementation on GitHub.",
+      "category": "Web",
       "tags": [
-        "Java"
+        "Laravel",
+        "PHP"
       ],
-      "visual": "list"
+      "visual": "java",
+      "repo": "University-learnign-platform",
+      "createdAt": "2026-01-01T16:52:40Z"
     }
   ],
-  "profilePhoto": "assets/profile-photo.png"
+  "profilePhoto": "assets/profile-photo.png",
+  "github": {
+    "excludeRepos": []
+  }
 }

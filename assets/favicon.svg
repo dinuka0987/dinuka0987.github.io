@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" rx="20" fill="#101311"/><text x="10" y="54" font-family="Arial,sans-serif" font-weight="700" font-size="43" fill="#c2f577">dd</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Dinuka Dilshan</title>
+  <rect width="64" height="64" rx="16" fill="#0f4f4f"/>
+  <g fill="#fffaf1" fill-rule="evenodd">
+    <path id="d" d="M24 15h7v34h-7v-3c-1.6 2.4-4 3.6-6.8 3.6C10.9 49.6 7 44.8 7 37.8 7 30.7 11 26 17.3 26c2.8 0 5 1 6.7 3V15Zm-4.9 17c-3.2 0-5 2.2-5 5.8s1.8 5.8 5 5.8c3.1 0 5.1-2.3 5.1-5.8s-2-5.8-5.1-5.8Z"/>
+    <use href="#d" x="25"/>
+  </g>
+  <circle cx="59" cy="47" r="2.5" fill="#d9bf91"/>
+</svg>

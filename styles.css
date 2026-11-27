@@ -668,49 +668,65 @@ footer > a.g3-backtop { font: 600 .75rem/1.45 var(--font); color: var(--green); 
   .tags span:hover, .g3-social-link:hover .g3-icon-shell, .g3-social-link:hover .g3-brand-icon { transform: none; }
 }
 
-/* Professional controls: flat surfaces replace the physical-key treatment.
-   Existing selectors and actions are retained; card/glass effects stay intact. */
+/* Reference button skin: soft teal pills, cream secondary controls and inset
+   pressed states. No hard bottom edge, glossy overlay or movement. */
 .button, .nav-contact, .project-link, .g3-resume-link, .g3-backtop,
 .section-heading > .text-link, .email-link, .contact-links .g3-resume-link {
-  border-radius: 10px; border: 1px solid #0f4f4f33;
-  background: #ffffffb3; color: var(--green); font-weight: 600;
-  box-shadow: none; transform: none;
+  border-radius: 999px; border: 1px solid #ffffffa6;
+  background: var(--panel); color: var(--green); font-weight: 600;
+  box-shadow: 3px 3px 8px #7e6d5330, -3px -3px 7px #ffffffbf;
+  transform: none;
   transition: background-color 180ms ease-out, border-color 180ms ease-out, box-shadow 180ms ease-out;
 }
 .button.primary, .nav-contact, .project-link {
-  background: var(--green); border-color: var(--green); color: var(--on-primary);
+  background: linear-gradient(180deg, #175b58, #0f4f4f);
+  border-color: #0f4f4f; color: var(--on-primary);
+  box-shadow: 3px 3px 8px #61543d33, -2px -2px 6px #ffffffa6, inset 0 1px 0 #ffffff26;
 }
 .primary::after, .nav-contact::after, .project-link::after { display: none; }
 .button:hover, .nav-contact:hover, .project-link:hover, .g3-resume-link:hover,
 .g3-backtop:hover, .section-heading > .text-link:hover, .email-link:hover {
-  background: #ffffffeb; border-color: #0f4f4f66; transform: none;
-  box-shadow: 0 2px 8px #153d3d12;
+  background: #faf4ea; border-color: #ffffffcc; transform: none;
+  box-shadow: 4px 4px 10px #7e6d5338, -3px -3px 8px #ffffffcc;
 }
 .button.primary:hover, .nav-contact:hover, .project-link:hover {
-  background: var(--primary-hover); color: var(--on-primary); border-color: var(--primary-hover);
+  background: linear-gradient(180deg, #1a625e, #105451);
+  color: var(--on-primary); border-color: #105451;
+  box-shadow: 4px 4px 10px #61543d38, -2px -2px 7px #ffffffb3, inset 0 1px 0 #ffffff26;
 }
 .button:active, .nav-contact:active, .project-link:active, .g3-resume-link:active,
 .g3-backtop:active, .section-heading > .text-link:active, .email-link:active {
-  background: #e1ebe5; box-shadow: none; transform: none;
+  background: var(--surface-inset); transform: none;
+  box-shadow: inset 3px 3px 7px #a38f724d, inset -3px -3px 7px #fffaf1cc;
 }
-.button.primary:active, .nav-contact:active, .project-link:active { background: #083636; color: var(--on-primary); }
+.button.primary:active, .nav-contact:active, .project-link:active {
+  background: var(--green); color: var(--on-primary);
+  box-shadow: inset 3px 3px 6px #00232361, inset -2px -2px 5px #ffffff1f;
+}
 .button:disabled, .button[aria-disabled="true"] {
   background: var(--disabled-bg); color: var(--disabled-text); border-color: var(--disabled-bg);
   box-shadow: none; transform: none;
 }
-.button.primary[aria-busy="true"] { background: var(--green); color: var(--on-primary); box-shadow: none; }
-.filters button, .nav-toggle, .g3-icon-shell {
-  border: 1px solid #0f4f4f26; background: #ffffffa6; border-radius: 10px;
-  box-shadow: none; transform: none;
+.button.primary[aria-busy="true"] {
+  background: var(--green); color: var(--on-primary);
+  box-shadow: inset 3px 3px 6px #00232361, inset -2px -2px 5px #ffffff1f;
 }
+.filters button, .nav-toggle, .g3-icon-shell {
+  border: 1px solid #ffffffa6; background: var(--panel); border-radius: 12px;
+  box-shadow: 2px 2px 6px #7e6d5329, -2px -2px 6px #ffffffb3; transform: none;
+}
+.filters button { border-radius: 999px; }
 .filters button:hover, .nav-toggle:hover, .g3-social-link:hover .g3-icon-shell {
-  background: #ffffffeb; border-color: #0f4f4f59; box-shadow: none; transform: none;
+  background: #faf4ea; border-color: #ffffffcc;
+  box-shadow: 3px 3px 8px #7e6d5333, -2px -2px 7px #ffffffbf; transform: none;
 }
 .filters button.active, .filters button.active:hover {
-  background: var(--green); color: var(--on-primary); border-color: var(--green); box-shadow: none;
+  background: var(--green); color: var(--on-primary); border-color: var(--green);
+  box-shadow: inset 2px 2px 5px #00232340, inset -1px -1px 3px #ffffff1a;
 }
 .filters button:active, .nav-toggle[aria-expanded="true"], .g3-social-link:active .g3-icon-shell {
-  background: #dbe8e1; box-shadow: none; transform: none;
+  background: var(--surface-inset); transform: none;
+  box-shadow: inset 2px 2px 5px #a38f724d, inset -2px -2px 5px #fffaf1bf;
 }
 .g3-social-link:hover .g3-brand-icon { transform: none; }
 .header nav a:hover, .g3-footer-links a:hover { transform: none; box-shadow: none; }
